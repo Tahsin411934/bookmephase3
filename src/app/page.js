@@ -10,12 +10,16 @@ const roboto = Roboto({ subsets: ["latin"], weight: ["400"] });
 
 async function getServicesData() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/services`,);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/services`, {
+      next: { revalidate: 60 } // Revalidate data every 60 seconds
+    });
+    
     if (!res.ok) {
       throw new Error('Failed to fetch services data');
     }
+    
     const data = await res.json();
-    return data.data; // Access the data array from the response
+    return data.data || []; // Return empty array if data.data is undefined
   } catch (error) {
     console.error('Error fetching services:', error);
     return [];
@@ -25,24 +29,25 @@ async function getServicesData() {
 export default async function Home() {
   const servicesData = await getServicesData();
 
-  const shouldShowVisa = servicesData?.some(
-    item => item.category_name === "Visa" && item.isShow === "yes"
+  // Safely check for each category
+  const shouldShowVisa = servicesData.some(
+    item => item?.category_name === "Visa" && item?.isShow === "yes"
   );
 
-  const shouldShowTour = servicesData?.some(
-    item => item.category_name === "Tour" && item.isShow === "yes"
+  const shouldShowTour = servicesData.some(
+    item => item?.category_name === "Tour" && item?.isShow === "yes"
   );
 
-  const shouldShowTangour = servicesData?.some(
-    item => item.category_name === "Tanguar Haor" && item.isShow === "yes"
+  const shouldShowTangour = servicesData.some(
+    item => item?.category_name === "Tanguar Haor" && item?.isShow === "yes"
   );
 
-  const shouldShowSundarban = servicesData?.some(
-    item => item.category_name === "Sundarban" && item.isShow === "yes"
+  const shouldShowSundarban = servicesData.some(
+    item => item?.category_name === "Sundarban" && item?.isShow === "yes"
   );
 
-  const shouldShowSaintMartin = servicesData?.some(
-    item => item.category_name === "Saint Martin Ships" && item.isShow === "yes"
+  const shouldShowSaintMartin = servicesData.some(
+    item => item?.category_name === "Saint Martin Ships" && item?.isShow === "yes"
   );
 
   return (
@@ -58,13 +63,13 @@ export default async function Home() {
             {/* Visa Section */}
             {shouldShowVisa && <Visa />}
 
-            {/* Tour Section */}
+            {/* Tour Sections */}
             {shouldShowTour && (
-              <div>
+              <>
                 {shouldShowTangour && <Tangour />}
                 {shouldShowSundarban && <Sundarban />}
                 {shouldShowSaintMartin && <SaintMartin />}
-              </div>
+              </>
             )}
           </div>
         </div>
