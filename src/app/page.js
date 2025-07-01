@@ -10,7 +10,7 @@ const roboto = Roboto({ subsets: ["latin"], weight: ["400"] });
 
 async function getServicesData() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/contact-attributes`,);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/services`,);
     if (!res.ok) {
       throw new Error('Failed to fetch services data');
     }
