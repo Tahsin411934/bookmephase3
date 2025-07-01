@@ -10,7 +10,7 @@ const roboto = Roboto({ subsets: ["latin"], weight: ["400"] });
 
 async function getServicesData() {
   try {
-    const res = await fetch('https://bookme.com.bd/admin/api/services');
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/contact-attributes `,);
     if (!res.ok) {
       throw new Error('Failed to fetch services data');
     }
